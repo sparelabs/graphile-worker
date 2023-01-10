@@ -1,5 +1,11 @@
 # graphile-worker
 
+## Sparelabs Fork
+Steps:
+1. Run `yarn prepack` to generate `/dist` folder before committing changes. This is hacky but allows us to avoid creating a package.
+2. Create a release tag and update the graphile-worker version in `spare`
+
+## Graphile README
 [![Patreon sponsor button](https://img.shields.io/badge/sponsor-via%20Patreon-orange.svg)](https://patreon.com/benjie)
 [![Discord chat room](https://img.shields.io/discord/489127045289476126.svg)](http://discord.gg/graphile)
 [![Package on npm](https://img.shields.io/npm/v/graphile-worker.svg?style=flat)](https://www.npmjs.com/package/graphile-worker)
