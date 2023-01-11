@@ -17,6 +17,10 @@ interface WorkerDefaults {
      */
     schema: string;
     /**
+     * Which PostgreSQL table should Graphile Worker use to store its migrations? Defaults to 'migrations'.
+     */
+    migrationsTableName: string;
+    /**
      * How many errors in a row can we get fetching a job before we raise a higher
      * exception?
      */

@@ -334,6 +334,10 @@ export interface SharedOptions {
      */
     schema?: string;
     /**
+     * Which PostgreSQL table should Graphile Worker use to store its migrations? Defaults to 'migrations'.
+     */
+    migrationsTableName?: string;
+    /**
      * A PostgreSQL connection string to the database containing the job queue
      */
     connectionString?: string;

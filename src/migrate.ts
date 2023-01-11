@@ -24,13 +24,13 @@ async function fetchAndCheckPostgresVersion(client: PoolClient) {
 }
 
 async function installSchema(options: WorkerSharedOptions, client: PoolClient) {
-  const { escapedWorkerSchema } = processSharedOptions(options);
+  const { escapedWorkerSchema, escapedMigrationsTableName } = processSharedOptions(options);
 
   await fetchAndCheckPostgresVersion(client);
 
   await client.query(`
     create schema ${escapedWorkerSchema};
-    create table ${escapedWorkerSchema}.graphile_migrations(
+    create table ${escapedWorkerSchema}.${escapedMigrationsTableName}(
       id int primary key,
       ts timestamptz default now() not null
     );
@@ -43,7 +43,7 @@ async function runMigration(
   migrationFile: string,
   migrationNumber: number,
 ) {
-  const { escapedWorkerSchema } = processSharedOptions(options);
+  const { escapedWorkerSchema, escapedMigrationsTableName } = processSharedOptions(options);
   const rawText = await readFile(
     `${__dirname}/../sql/${migrationFile}`,
     "utf8",
@@ -58,7 +58,7 @@ async function runMigration(
       text,
     });
     await client.query({
-      text: `insert into ${escapedWorkerSchema}.graphile_migrations (id) values ($1)`,
+      text: `insert into ${escapedWorkerSchema}.${escapedMigrationsTableName} (id) values ($1)`,
       values: [migrationNumber],
     });
     await client.query("commit");
@@ -72,14 +72,14 @@ export async function migrate(
   options: WorkerSharedOptions,
   client: PoolClient,
 ) {
-  const { escapedWorkerSchema } = processSharedOptions(options);
+  const { escapedWorkerSchema, escapedMigrationsTableName } = processSharedOptions(options);
   let latestMigration: number | null = null;
   try {
     const {
       rows: [row],
     } = await client.query(
       `select current_setting('server_version_num') as server_version_num,
-      (select id from ${escapedWorkerSchema}.graphile_migrations order by id desc limit 1) as id;`,
+      (select id from ${escapedWorkerSchema}.${escapedMigrationsTableName} order by id desc limit 1) as id;`,
     );
 
     latestMigration = row.id;

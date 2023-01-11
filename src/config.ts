@@ -24,6 +24,11 @@ interface WorkerDefaults {
   schema: string;
 
   /**
+   * Which PostgreSQL table should Graphile Worker use to store its migrations? Defaults to 'migrations'.
+   */
+  migrationsTableName: string;
+
+  /**
    * How many errors in a row can we get fetching a job before we raise a higher
    * exception?
    */
@@ -46,6 +51,10 @@ export const defaults: WorkerDefaults = {
     process.env.GRAPHILE_WORKER_SCHEMA ||
     enforceStringOrUndefined("schema", cosmiconfig?.schema) ||
     "graphile_worker",
+  migrationsTableName:
+    process.env.GRAPHILE_WORKER_MIGRATIONS_TABLE_NAME ||
+    enforceStringOrUndefined("migrationsTableName", cosmiconfig?.migrationsTableName) ||
+    "migrations",
   maxContiguousErrors:
     enforceNumberOrUndefined(
       "maxContiguousErrors",

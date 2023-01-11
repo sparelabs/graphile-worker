@@ -13,8 +13,9 @@ const _sharedOptionsCache = new WeakMap();
 function processSharedOptions(options, { scope } = {}) {
     let compiled = _sharedOptionsCache.get(options);
     if (!compiled) {
-        const { logger = logger_1.defaultLogger, schema: workerSchema = config_1.defaults.schema, events = new events_1.EventEmitter(), useNodeTime = false, minResetLockedInterval = 8 * cronConstants_1.MINUTE, maxResetLockedInterval = 10 * cronConstants_1.MINUTE, } = options;
+        const { logger = logger_1.defaultLogger, schema: workerSchema = config_1.defaults.schema, migrationsTableName: workerMigrationsTableName = config_1.defaults.migrationsTableName, events = new events_1.EventEmitter(), useNodeTime = false, minResetLockedInterval = 8 * cronConstants_1.MINUTE, maxResetLockedInterval = 10 * cronConstants_1.MINUTE, } = options;
         const escapedWorkerSchema = pg_1.Client.prototype.escapeIdentifier(workerSchema);
+        const escapedMigrationsTableName = pg_1.Client.prototype.escapeIdentifier(workerMigrationsTableName);
         if (!Number.isFinite(minResetLockedInterval) ||
             !Number.isFinite(maxResetLockedInterval) ||
             minResetLockedInterval < 1 ||
@@ -26,6 +27,7 @@ function processSharedOptions(options, { scope } = {}) {
             logger,
             workerSchema,
             escapedWorkerSchema,
+            escapedMigrationsTableName,
             maxContiguousErrors: config_1.defaults.maxContiguousErrors,
             useNodeTime,
             minResetLockedInterval,
