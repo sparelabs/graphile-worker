@@ -420,7 +420,7 @@ export interface SharedOptions {
   /**
    * Which PostgreSQL table should Graphile Worker use to store its migrations? Defaults to 'migrations'.
    */
-  migrationsTableName?: string;
+  migrationsTable?: string;
 
   /**
    * A PostgreSQL connection string to the database containing the job queue

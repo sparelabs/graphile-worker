@@ -1,7 +1,7 @@
 import { WorkerSharedOptions } from "../src";
 import { migrate } from "../src/migrate";
 import {
-  ESCAPED_GRAPHILE_WORKER_MIGRATIONS_TABLENAME,
+  ESCAPED_GRAPHILE_WORKER_MIGRATIONS_TABLE,
   ESCAPED_GRAPHILE_WORKER_SCHEMA,
   getJobs,
   GRAPHILE_WORKER_SCHEMA,
@@ -33,7 +33,7 @@ test("migration installs schema; second migration does no harm", async () => {
 
     // Assert migrations table exists and has relevant entries
     const { rows: migrationRows } = await pgClient.query(
-      `select * from ${ESCAPED_GRAPHILE_WORKER_SCHEMA}.${ESCAPED_GRAPHILE_WORKER_MIGRATIONS_TABLENAME}`,
+      `select * from ${ESCAPED_GRAPHILE_WORKER_SCHEMA}.${ESCAPED_GRAPHILE_WORKER_MIGRATIONS_TABLE}`,
     );
     expect(migrationRows).toHaveLength(13);
     const migration = migrationRows[0];

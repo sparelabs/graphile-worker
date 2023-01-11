@@ -43,8 +43,8 @@ export const GRAPHILE_WORKER_SCHEMA =
   process.env.GRAPHILE_WORKER_SCHEMA || "graphile_worker";
 export const ESCAPED_GRAPHILE_WORKER_SCHEMA =
   pg.Client.prototype.escapeIdentifier(GRAPHILE_WORKER_SCHEMA);
-export const ESCAPED_GRAPHILE_WORKER_MIGRATIONS_TABLENAME =
-  pg.Client.prototype.escapeIdentifier(process.env.GRAPHILE_WORKER_MIGRATIONS_TABLENAME || "migrations");
+export const ESCAPED_GRAPHILE_WORKER_MIGRATIONS_TABLE =
+  pg.Client.prototype.escapeIdentifier(process.env.GRAPHILE_WORKER_MIGRATIONS_TABLE || "migrations");
 
 export async function withPgPool<T>(
   cb: (pool: pg.Pool) => Promise<T>,

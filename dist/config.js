@@ -8,8 +8,8 @@ exports.defaults = {
     schema: process.env.GRAPHILE_WORKER_SCHEMA ||
         enforceStringOrUndefined("schema", cosmiconfig?.schema) ||
         "graphile_worker",
-    migrationsTableName: process.env.GRAPHILE_WORKER_MIGRATIONS_TABLE_NAME ||
-        enforceStringOrUndefined("migrationsTableName", cosmiconfig?.migrationsTableName) ||
+    migrationsTable: process.env.GRAPHILE_WORKER_MIGRATIONS_TABLE ||
+        enforceStringOrUndefined("migrationsTable", cosmiconfig?.migrationsTable) ||
         "migrations",
     maxContiguousErrors: enforceNumberOrUndefined("maxContiguousErrors", cosmiconfig?.maxContiguousErrors) || 10,
     pollInterval: enforceNumberOrUndefined("pollInterval", cosmiconfig?.pollInterval) || 2000,
