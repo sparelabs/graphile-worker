@@ -32,7 +32,7 @@ test("migration installs schema; second migration does no harm", async () => {
 
     // Assert migrations table exists and has relevant entries
     const { rows: migrationRows } = await pgClient.query(
-      `select * from ${ESCAPED_GRAPHILE_WORKER_SCHEMA}.migrations`,
+      `select * from ${ESCAPED_GRAPHILE_WORKER_SCHEMA}.graphile_migrations`,
     );
     expect(migrationRows).toHaveLength(13);
     const migration = migrationRows[0];

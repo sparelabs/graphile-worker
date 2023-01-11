@@ -18,7 +18,7 @@ async function installSchema(options, client) {
     await fetchAndCheckPostgresVersion(client);
     await client.query(`
     create schema ${escapedWorkerSchema};
-    create table ${escapedWorkerSchema}.migrations(
+    create table ${escapedWorkerSchema}.graphile_migrations(
       id int primary key,
       ts timestamptz default now() not null
     );
@@ -34,7 +34,7 @@ async function runMigration(options, client, migrationFile, migrationNumber) {
             text,
         });
         await client.query({
-            text: `insert into ${escapedWorkerSchema}.migrations (id) values ($1)`,
+            text: `insert into ${escapedWorkerSchema}.graphile_migrations (id) values ($1)`,
             values: [migrationNumber],
         });
         await client.query("commit");
@@ -49,7 +49,7 @@ async function migrate(options, client) {
     let latestMigration = null;
     try {
         const { rows: [row], } = await client.query(`select current_setting('server_version_num') as server_version_num,
-      (select id from ${escapedWorkerSchema}.migrations order by id desc limit 1) as id;`);
+      (select id from ${escapedWorkerSchema}.graphile_migrations order by id desc limit 1) as id;`);
         latestMigration = row.id;
         checkPostgresVersion(row.server_version_num);
     }
