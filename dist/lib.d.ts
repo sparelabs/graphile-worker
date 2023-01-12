@@ -6,7 +6,7 @@ export interface CompiledSharedOptions {
     logger: Logger;
     workerSchema: string;
     escapedWorkerSchema: string;
-    escapedmigrationsTable: string;
+    escapedMigrationsTable: string;
     maxContiguousErrors: number;
     useNodeTime: boolean;
     minResetLockedInterval: number;

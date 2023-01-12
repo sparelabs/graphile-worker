@@ -24,13 +24,13 @@ async function fetchAndCheckPostgresVersion(client: PoolClient) {
 }
 
 async function installSchema(options: WorkerSharedOptions, client: PoolClient) {
-  const { escapedWorkerSchema, escapedmigrationsTable } = processSharedOptions(options);
+  const { escapedWorkerSchema, escapedMigrationsTable } = processSharedOptions(options);
 
   await fetchAndCheckPostgresVersion(client);
 
   await client.query(`
-    create schema ${escapedWorkerSchema};
-    create table ${escapedWorkerSchema}.${escapedmigrationsTable}(
+    create schema if not exists ${escapedWorkerSchema};
+    create table if not exists ${escapedWorkerSchema}.${escapedMigrationsTable}(
       id int primary key,
       ts timestamptz default now() not null
     );
@@ -43,7 +43,7 @@ async function runMigration(
   migrationFile: string,
   migrationNumber: number,
 ) {
-  const { escapedWorkerSchema, escapedmigrationsTable } = processSharedOptions(options);
+  const { escapedWorkerSchema, escapedMigrationsTable } = processSharedOptions(options);
   const rawText = await readFile(
     `${__dirname}/../sql/${migrationFile}`,
     "utf8",
@@ -58,7 +58,7 @@ async function runMigration(
       text,
     });
     await client.query({
-      text: `insert into ${escapedWorkerSchema}.${escapedmigrationsTable} (id) values ($1)`,
+      text: `insert into ${escapedWorkerSchema}.${escapedMigrationsTable} (id) values ($1)`,
       values: [migrationNumber],
     });
     await client.query("commit");
@@ -72,14 +72,14 @@ export async function migrate(
   options: WorkerSharedOptions,
   client: PoolClient,
 ) {
-  const { escapedWorkerSchema, escapedmigrationsTable } = processSharedOptions(options);
+  const { escapedWorkerSchema, escapedMigrationsTable } = processSharedOptions(options);
   let latestMigration: number | null = null;
   try {
     const {
       rows: [row],
     } = await client.query(
       `select current_setting('server_version_num') as server_version_num,
-      (select id from ${escapedWorkerSchema}.${escapedmigrationsTable} order by id desc limit 1) as id;`,
+      (select id from ${escapedWorkerSchema}.${escapedMigrationsTable} order by id desc limit 1) as id;`,
     );
 
     latestMigration = row.id;

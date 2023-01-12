@@ -20,7 +20,7 @@ export interface CompiledSharedOptions {
   logger: Logger;
   workerSchema: string;
   escapedWorkerSchema: string;
-  escapedmigrationsTable: string;
+  escapedMigrationsTable: string;
   maxContiguousErrors: number;
   useNodeTime: boolean;
   minResetLockedInterval: number;
@@ -49,7 +49,7 @@ export function processSharedOptions(
       maxResetLockedInterval = 10 * MINUTE,
     } = options;
     const escapedWorkerSchema = Client.prototype.escapeIdentifier(workerSchema);
-    const escapedmigrationsTable = Client.prototype.escapeIdentifier(workermigrationsTable)
+    const escapedMigrationsTable = Client.prototype.escapeIdentifier(workermigrationsTable)
     if (
       !Number.isFinite(minResetLockedInterval) ||
       !Number.isFinite(maxResetLockedInterval) ||
@@ -65,7 +65,7 @@ export function processSharedOptions(
       logger,
       workerSchema,
       escapedWorkerSchema,
-      escapedmigrationsTable,
+      escapedMigrationsTable,
       maxContiguousErrors: defaults.maxContiguousErrors,
       useNodeTime,
       minResetLockedInterval,

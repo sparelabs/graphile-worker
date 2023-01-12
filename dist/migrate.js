@@ -14,18 +14,18 @@ async function fetchAndCheckPostgresVersion(client) {
     checkPostgresVersion(row.server_version_num);
 }
 async function installSchema(options, client) {
-    const { escapedWorkerSchema, escapedmigrationsTable } = (0, lib_1.processSharedOptions)(options);
+    const { escapedWorkerSchema, escapedMigrationsTable } = (0, lib_1.processSharedOptions)(options);
     await fetchAndCheckPostgresVersion(client);
     await client.query(`
-    create schema ${escapedWorkerSchema};
-    create table ${escapedWorkerSchema}.${escapedmigrationsTable}(
+    create schema if not exists ${escapedWorkerSchema};
+    create table if not exists ${escapedWorkerSchema}.${escapedMigrationsTable}(
       id int primary key,
       ts timestamptz default now() not null
     );
   `);
 }
 async function runMigration(options, client, migrationFile, migrationNumber) {
-    const { escapedWorkerSchema, escapedmigrationsTable } = (0, lib_1.processSharedOptions)(options);
+    const { escapedWorkerSchema, escapedMigrationsTable } = (0, lib_1.processSharedOptions)(options);
     const rawText = await (0, fs_1.readFile)(`${__dirname}/../sql/${migrationFile}`, "utf8");
     const text = rawText.replace(/:GRAPHILE_WORKER_SCHEMA\b/g, escapedWorkerSchema);
     await client.query("begin");
@@ -34,7 +34,7 @@ async function runMigration(options, client, migrationFile, migrationNumber) {
             text,
         });
         await client.query({
-            text: `insert into ${escapedWorkerSchema}.${escapedmigrationsTable} (id) values ($1)`,
+            text: `insert into ${escapedWorkerSchema}.${escapedMigrationsTable} (id) values ($1)`,
             values: [migrationNumber],
         });
         await client.query("commit");
@@ -45,11 +45,11 @@ async function runMigration(options, client, migrationFile, migrationNumber) {
     }
 }
 async function migrate(options, client) {
-    const { escapedWorkerSchema, escapedmigrationsTable } = (0, lib_1.processSharedOptions)(options);
+    const { escapedWorkerSchema, escapedMigrationsTable } = (0, lib_1.processSharedOptions)(options);
     let latestMigration = null;
     try {
         const { rows: [row], } = await client.query(`select current_setting('server_version_num') as server_version_num,
-      (select id from ${escapedWorkerSchema}.${escapedmigrationsTable} order by id desc limit 1) as id;`);
+      (select id from ${escapedWorkerSchema}.${escapedMigrationsTable} order by id desc limit 1) as id;`);
         latestMigration = row.id;
         checkPostgresVersion(row.server_version_num);
     }
