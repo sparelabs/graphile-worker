@@ -25,6 +25,13 @@ const argv_ = yargs
     default: defaults.schema,
   })
   .string("schema")
+  .option("migrations-table", {
+    description:
+      "The database table in which Graphile Worker stores its migrations",
+    alias: "t",
+    default: defaults.migrationsTable,
+  })
+  .string("migrations-table")
   .option("schema-only", {
     description: "Just install (or update) the database schema, then exit",
     default: false,
@@ -87,8 +94,10 @@ const isInteger = (n: number): boolean => {
 };
 
 async function main() {
+  console.log({ argv })
   const DATABASE_URL = argv.connection || process.env.DATABASE_URL || undefined;
   const SCHEMA = argv.schema || undefined;
+  const MIGRATIONS_TABLE = argv["migrations-table"] || undefined;
   const ONCE = argv.once;
   const SCHEMA_ONLY = argv["schema-only"];
   const WATCH = argv.watch;
@@ -111,6 +120,7 @@ async function main() {
 
   const options: RunnerOptions = {
     schema: SCHEMA || defaults.schema,
+    migrationsTable: MIGRATIONS_TABLE || defaults.migrationsTable,
     concurrency: isInteger(argv.jobs) ? argv.jobs : defaults.concurrentJobs,
     maxPoolSize: isInteger(argv["max-pool-size"])
       ? argv["max-pool-size"]
