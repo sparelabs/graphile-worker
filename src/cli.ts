@@ -94,7 +94,6 @@ const isInteger = (n: number): boolean => {
 };
 
 async function main() {
-  console.log({ argv })
   const DATABASE_URL = argv.connection || process.env.DATABASE_URL || undefined;
   const SCHEMA = argv.schema || undefined;
   const MIGRATIONS_TABLE = argv["migrations-table"] || undefined;
