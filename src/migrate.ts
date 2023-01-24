@@ -27,9 +27,13 @@ async function installSchema(options: WorkerSharedOptions, client: PoolClient) {
   const { escapedWorkerSchema, escapedMigrationsTable } = processSharedOptions(options);
 
   await fetchAndCheckPostgresVersion(client);
+  // Don't use CREATE SCHEMA if the schema already exists because this will cause permission errors in some environments
+  const schemaQueryResult = await client.query(`select 1 from pg_namespace where nspname = ${escapedWorkerSchema} limit 1;`)
+  if (schemaQueryResult.rowCount === 0) {
+    await client.query(`create schema ${escapedWorkerSchema};`);
+  }
 
   await client.query(`
-    create schema if not exists ${escapedWorkerSchema};
     create table if not exists ${escapedWorkerSchema}.${escapedMigrationsTable}(
       id int primary key,
       ts timestamptz default now() not null
