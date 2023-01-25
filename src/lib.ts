@@ -42,14 +42,14 @@ export function processSharedOptions(
     const {
       logger = defaultLogger,
       schema: workerSchema = defaults.schema,
-      migrationsTable: workermigrationsTable = defaults.migrationsTable,
+      migrationsTable: workerMigrationsTable = defaults.migrationsTable,
       events = new EventEmitter(),
       useNodeTime = false,
       minResetLockedInterval = 8 * MINUTE,
       maxResetLockedInterval = 10 * MINUTE,
     } = options;
     const escapedWorkerSchema = Client.prototype.escapeIdentifier(workerSchema);
-    const escapedMigrationsTable = Client.prototype.escapeIdentifier(workermigrationsTable)
+    const escapedMigrationsTable = Client.prototype.escapeIdentifier(workerMigrationsTable)
     if (
       !Number.isFinite(minResetLockedInterval) ||
       !Number.isFinite(maxResetLockedInterval) ||

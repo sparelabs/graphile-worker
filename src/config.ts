@@ -50,11 +50,11 @@ export const defaults: WorkerDefaults = {
   schema:
     process.env.GRAPHILE_WORKER_SCHEMA ||
     enforceStringOrUndefined("schema", cosmiconfig?.schema) ||
-    "graphile_worker",
+    "public",
   migrationsTable:
     process.env.GRAPHILE_WORKER_MIGRATIONS_TABLE ||
     enforceStringOrUndefined("migrationsTable", cosmiconfig?.migrationsTable) ||
-    "migrations",
+    "graphile_migrations",
   maxContiguousErrors:
     enforceNumberOrUndefined(
       "maxContiguousErrors",
