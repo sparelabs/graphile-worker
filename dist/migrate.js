@@ -18,9 +18,8 @@ async function installSchema(options, client) {
     await fetchAndCheckPostgresVersion(client);
     // Don't use CREATE SCHEMA if the schema already exists because this will cause permission errors in some environments
     const schemaQueryResult = await client.query(`select 1 from pg_namespace where nspname = '${escapedWorkerSchema}' limit 1;`);
-    console.log(schemaQueryResult);
     if (schemaQueryResult.rowCount === 0) {
-        await client.query(`create schema ${escapedWorkerSchema};`);
+        await client.query(`create schema if not exists ${escapedWorkerSchema};`);
     }
     await client.query(`
     create table if not exists ${escapedWorkerSchema}.${escapedMigrationsTable}(
