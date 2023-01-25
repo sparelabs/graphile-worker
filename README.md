@@ -4,6 +4,7 @@
 Steps:
 1. Run `yarn prepack` to generate `/dist` folder before committing changes. This is hacky but allows us to avoid creating a package.
   - This is done automatically when running `yarn test`
+2. Update the `version` field in `package.json` to the tag that you will create
 2. Create a release tag and update the graphile-worker version in `lib/job-queue`
   - e.g. `"graphile-worker": "sparelabs/graphile-worker#v2.1.0"`
 
